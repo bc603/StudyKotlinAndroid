@@ -3,6 +3,13 @@ package com.example.section11
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.item_main.view.*
 
 
 // SQLite는 오픈소스로 만들어진 관계형 데이터베이스
@@ -55,6 +62,49 @@ class MainActivity : AppCompatActivity() {
         // onDrawOver 모든 항목이 배치된 후에 호출
         // getItemOffsets  각 항목을 배치할 떄 호출
 
+        addBtnView.setOnClickListener{
+            val title=addTitleView.text.toString()
+            val content = addContentView.text.toString()
 
+            val helper = DBHelper(this)
+            val db = helper.writableDatabase
+            db.execSQL("insert into tb_memo(title, content) values(?, ?)",
+                arrayOf<String>(title, content))
+
+            val cursor = db.rawQuery("select title, content from tb_memo order by _id desc limit 1", null)
+
+            while(cursor.moveToNext()) {
+                resultView.text = "${cursor.getString(0)}, ${cursor.getString(1)}"
+            }
+
+            db.close()
+
+            val list = mutableListOf<String>()
+            for(i in 0..10) {
+                list.add("Item $i")
+            }
+            recyclerView.adapter = MyAdapter(list)
+            recyclerView.layoutManager = LinearLayoutManager(this)
+        }
+    }
+
+    class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+        val itemTextVirew = itemView.itemTextView
+    }
+
+    class MyAdapter(val list:MutableList<String>): RecyclerView.Adapter<MyViewHolder>() {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.item_main, parent, false)
+            return MyViewHolder(view)
+        }
+
+        override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+            val text = list.get(position)
+            holder.itemTextVirew.text = text
+        }
+
+        override fun getItemCount(): Int {
+            return list.size
+        }
     }
 }
