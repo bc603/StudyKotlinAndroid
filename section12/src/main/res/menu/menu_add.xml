@@ -5,5 +5,13 @@
     <item android:id="@+id/menu_add"
         android:title="save"
         android:icon="@android:drawable/ic_menu_save"
-        app:showAsAction="always" />
+        app:showAsAction="always" /> <!--액션버튼 바로 보인다 -->
+
+    <!--
+    showAsAction 옵션
+    never 기본값, 항상 오버플로 메뉴로 구성
+    always 항상 액션 버튼으로 구성
+    ifRoom ActionBar에 아이콘이 올라갈 공간이 있으면 액션버튼으로, 아니면 오버플로 메뉴로 나타남
+    withText 아아콘+문자열, 문자열이 나타날 공간이 없다면 문자열이 나타나지 않음
+    -->
 </menu>
